@@ -20,16 +20,6 @@ phases:
     inputs:
       command: test
       projects: '**/*Test.csproj'
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet pack'
-    inputs:
-      command: pack
-      nobuild: true
-      versioningScheme: byEnvVar
-      versionEnvVar: PackageVersion
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact: drop'
-    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
 
 - phase: Phase_2
   displayName: Linux
@@ -59,3 +49,21 @@ phases:
       command: test
       projects: '**/*Test.csproj'
 
+-phase: Phase_4
+  displayName: Windows
+  condition: succeeded()
+  
+  queue:
+    name: Hosted VS2017
+  
+  steps:
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet pack'
+    inputs:
+      command: pack
+      nobuild: true
+      versioningScheme: byEnvVar
+      versionEnvVar: PackageVersion
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'
+    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
