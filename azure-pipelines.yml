@@ -15,11 +15,7 @@ phases:
     name: Hosted VS2017
   
   steps:
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet test'
-    inputs:
-      command: test
-      projects: '**/*Test.csproj'
+  - template: azure-steps.yml
 
 - phase: Phase_2
   displayName: Linux
@@ -29,11 +25,7 @@ phases:
     name: Hosted Ubuntu 1604
   
   steps:
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet test'
-    inputs:
-      command: test
-      projects: '**/*Test.csproj'
+  - template: azure-steps.yml
 
 - phase: Phase_3
   displayName: Mac
@@ -43,27 +35,4 @@ phases:
     name: Hosted macOS
   
   steps:
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet test'
-    inputs:
-      command: test
-      projects: '**/*Test.csproj'
-
-- phase: Phase_4
-  displayName: Windows
-  condition: succeeded()
-  
-  queue:
-    name: Hosted VS2017
-  
-  steps:
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet pack'
-    inputs:
-      command: pack
-      nobuild: true
-      versioningScheme: byEnvVar
-      versionEnvVar: PackageVersion
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact: drop'
-    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
+  - template: azure-steps.yml

@@ -1,0 +1,16 @@
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: test
+    projects: '**/*Test.csproj'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    nobuild: true
+    versioningScheme: byEnvVar
+    versionEnvVar: PackageVersion
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
